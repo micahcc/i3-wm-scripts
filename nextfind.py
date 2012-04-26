@@ -1,8 +1,8 @@
 #!/bin/python
 
+from sys import exit
 from subprocess import *
 import re
-import sys
 
 I3MSG = '/usr/bin/i3-msg';
 DMENU = '/usr/bin/dmenu';
@@ -30,7 +30,7 @@ for idset in sections:
 
 #if there were no windows, provide no options
 if len(targets) == 0:
-	sys.exit(1)
+	exit(1)
 
 #modify keys to indicate the number of matching windows
 options = dict()
