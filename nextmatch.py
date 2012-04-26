@@ -6,7 +6,7 @@ import re
 
 I3MSG = '/usr/bin/i3-msg';
 
-def require_window_list():
+def get_tree():
     p1 = Popen([I3MSG, "-t", "get_tree"], stdout=PIPE)
     i3input = str(p1.communicate()[0])
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
@@ -45,4 +45,4 @@ def focus_window(current,targets):
 if __name__ == '__main__':
     if(len(argv) != 2):
         exit(0)
-    require_window_list()
+    get_tree()
