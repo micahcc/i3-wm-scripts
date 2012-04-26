@@ -49,10 +49,8 @@ def number_of_matching_window(i3input,targets,current):
 
     #get the choice
     print(i3input)
-    print(i3input.decode('UTF-8'))
-    key = i3input.decode('UTF-8')
+    key = i3input.decode('UTF-8').rstrip('\n');
     print(key)
-    print(options)
     print(options[key])
 
     #if the choice is a window type that has multiple values, then pick the next
