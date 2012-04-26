@@ -10,5 +10,7 @@ what you always dreamed!
 Example usage in my .i3/config file:
 
 bindsym $mod+q exec python ~/bin/nextmatch.py vim
+
 bindsym $mod+w exec python ~/bin/nextmatch.py '(chromium|firefox)'
+
 bindsym $mod+e exec python ~/bin/nextfind.py
