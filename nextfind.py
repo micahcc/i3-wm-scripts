@@ -46,10 +46,14 @@ def number_of_matching_window(i3input,targets,current):
     concat = '\n'.join(options.keys())
     i3input = p1.communicate(bytes(concat,'UTF-8'))[0]
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    get_choice(current,i3input,key,options)
 
-    #get the choice
-    print(i3input)
+def get_choice(current,i3input,key,options):
     key = i3input.decode('UTF-8').rstrip('\n');
+    if key == '':
+        exit(1)
+
+    print(i3input)
     print(key)
     print(options[key])
 
