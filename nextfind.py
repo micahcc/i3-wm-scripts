@@ -10,7 +10,7 @@ DMENU = '/usr/bin/dmenu'
 def get_tree():
     p1 = Popen([I3MSG, "-t", "get_tree"], stdout=PIPE)
     i3input = str(p1.communicate()[0])
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    close_stdout(p1)
     get_named_windows(i3input)
 
 def get_named_windows(i3input):
@@ -45,10 +45,10 @@ def number_of_matching_window(i3input,targets,current):
     p1 = Popen([DMENU, '-i'], stdout=PIPE, stdin=PIPE)
     concat = '\n'.join(options.keys())
     i3input = p1.communicate(bytes(concat,'UTF-8'))[0]
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-    get_choice(current,i3input,key,options)
+    close_stdout(p1)
+    get_choice(current,i3input,options)
 
-def get_choice(current,i3input,key,options):
+def get_choice(current,i3input,options):
     key = i3input.decode('UTF-8').rstrip('\n');
     if key == '':
         exit(1)
@@ -74,6 +74,9 @@ def get_choice(current,i3input,key,options):
 def focus_window(ii,numtargs):
     print([I3MSG, '[con_id="'+str(numtargs[ii])+'"] focus'])
     p1 = Popen([I3MSG, '[con_id="'+str(numtargs[ii])+'"] focus'])
+
+def close_stdout(p1):
+    p1.stdout.close() # Allow p1 to receive a SIGPIPE if p2 exits
 
 if __name__ == '__main__':
     get_tree()
