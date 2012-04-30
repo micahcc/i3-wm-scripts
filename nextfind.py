@@ -38,7 +38,9 @@ def number_of_matching_window(i3input,targets,current):
     #modify keys to indicate the number of matching windows
     options = dict()
     for key in targets:
-        print(key)
+        if __debug__:
+            print(key)
+
         newkey = "(" + str(len(targets[key])) + ") " + key
         options[newkey] = targets[key]
 
@@ -53,15 +55,12 @@ def get_choice(current,i3input,options):
     if key == '':
         exit(1)
 
-    print(i3input)
-    print(key)
-    print(options[key])
+    if __debug__:
+        print(i3input, key, options[key])
 
     #if the choice is a window type that has multiple values, then pick the next
     #from the current, in order of id
     numtargs = [int(val) for val in options[key]]
-    print(current)
-    print(numtargs)
     if current in numtargs:
         numtargs.sort();
         pos = list.index(numtargs, current);
@@ -69,10 +68,15 @@ def get_choice(current,i3input,options):
     else:
         ii = 0
 
+    if __debug__:
+        print (current,numtargs)
+
     focus_window(ii,numtargs)
 
 def focus_window(ii,numtargs):
-    print([I3MSG, '[con_id="'+str(numtargs[ii])+'"] focus'])
+    if __debug__:
+        print([I3MSG, '[con_id="'+str(numtargs[ii])+'"] focus'])
+
     p1 = Popen([I3MSG, '[con_id="'+str(numtargs[ii])+'"] focus'])
 
 def close_stdout(p1):
