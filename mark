@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ i3-input -F 'mark %s' -l 15 -P 'Mark: '

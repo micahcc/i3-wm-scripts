@@ -28,6 +28,8 @@ bindsym $mod+Return exec urxvtc
 bindsym $mod+q exec python ~/bin/nextmatch.py vim
 bindsym $mod+w exec python ~/bin/nextmatch.py '(chromium|firefox)'
 bindsym $mod+e exec python ~/bin/nextfind.py
+bindsym $mod+m exec ~/bin/mark
+bindsym $mod+g exec ~/bin/goto
 
 # kill focused window
 bindsym $mod+Shift+C kill
@@ -118,7 +120,9 @@ bindsym $mod+Shift+Q exit
 bindsym $mod+z mode "resize"
 
 for_window [title="LONI Pipeline"] floating enable
+for_window [title="FSLView.*"] floating enable
 for_window [title="Execution Information"] floating enable
+for_window [title="Server changer"] floating enable
 
 
 # resize window (you can also use the mouse for that)
