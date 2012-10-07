@@ -1,4 +1,4 @@
 #!/bin/bash
 
 name=`i3-msg -t get_marks | tr -d '[],' | sed -e 's/""/\n/g' | tr -d '"' | dmenu`; 
-i3-msg "[con_mark=$name]" focus
+/usr/bin/i3-msg "[con_mark=$name]" focus

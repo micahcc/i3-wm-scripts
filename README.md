@@ -21,8 +21,18 @@ then it jumps to the next one, otherwise it stays at the current.
 
 Example usage in my .i3/config file:
 
+#To search for a hardcoded program:
 bindsym $mod+q exec python ~/bin/nextmatch.py vim
 
+#To search for a set of hardcoded programs: (I use this to jump to a webbrowser)
 bindsym $mod+w exec python ~/bin/nextmatch.py '(chromium|firefox)'
 
+#To search for a a program by name:
 bindsym $mod+e exec python ~/bin/nextfind.py
+
+#to mark a window for jumping back to
+bindsym $mod+m exec ~/bin/mark
+
+#to use dmenu to jump back to a particular program
+bindsym $mod+g exec ~/bin/goto
+
