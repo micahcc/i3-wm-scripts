@@ -1,4 +1,4 @@
 #!/bin/bash
 
 name=`i3-msg -t get_marks | tr -d '[],' | sed -e 's/""/\n/g' | tr -d '"' | dmenu`;
-/usr/bin/i3-msg unmark name
+/usr/bin/i3-msg unmark $name
