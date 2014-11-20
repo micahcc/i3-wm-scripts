@@ -56,5 +56,3 @@ bindsym $mod+Tab exec exec ~/bin/goto # get dmenu of marked windows
 To install just put the scripts in your path, or bind the scripts in you config
 file. I installed mine in ~/bin/, then made the bindings in my config file.
 
-### Example Config:
-
