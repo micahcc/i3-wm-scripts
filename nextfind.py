@@ -1,11 +1,12 @@
 #!env python
 
-from sys import exit
+from sys import exit, argv
 from subprocess import *
 import re
 
 I3MSG = '/usr/bin/i3-msg'
 DMENU = '/usr/bin/dmenu'
+DMENU_ARGS = argv[1:]
 
 ##
 # @brief Returns the giant list of windows in from i3
@@ -64,7 +65,7 @@ def select_window(current, windows):
         newkey = "(" + str(len(windows[key])) + ") " + key
         options[newkey] = windows[key]
 
-    p1 = Popen([DMENU, '-i'], stdout=PIPE, stdin=PIPE)
+    p1 = Popen([DMENU, '-i']+DMENU_ARGS, stdout=PIPE, stdin=PIPE)
     concat = '\n'.join(options.keys())
     ret = p1.communicate(bytes(concat,'UTF-8'))[0].decode('UTF-8').rstrip()
     p1.stdout.close()
