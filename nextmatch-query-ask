@@ -1,0 +1,5 @@
+#!/bin/sh -ue
+q=$(dmenu -p /)
+here="$(dirname "$0")"
+printf %s "$q" >"$here/.query.tmp"
+exec "$here/nextmatch" "$q"

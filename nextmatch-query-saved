@@ -1,0 +1,9 @@
+#!/bin/sh -ue
+here="$(dirname "$0")"
+q=$(cat "$here/.query.tmp") || true
+echo "q: $q"
+if [ -z "$q" ]; then
+    q=$(dmenu -p '(empty) /')
+    printf %s "$q" >"$here/.query.tmp"
+fi
+exec "$here/nextmatch" "$q"
