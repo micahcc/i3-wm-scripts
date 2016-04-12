@@ -1,0 +1,55 @@
+#!/bin/sh -ue
+# i3-exec COMMAND [ARG]..
+#
+# Run an i3 exec command with escaping for both sh and i3's exec command.
+
+fatal() {
+    printf %s\\n "$(basename "$0"): $2" >&2
+    exit $1
+}
+
+handle_option() {
+    fatal 64 "unknown option: $1"
+}
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --)
+            shift
+            break;;
+        --*=*)
+            x="${1#--}"
+            handle_option "${x%%=*}" "${x#*=}"
+            shift;;
+        --*)
+            handle_option "${1#--}"
+            shift;;
+        -?*)
+            if [ ${#1} = 2 ]; then
+                handle_option "${1#-}"
+            else
+                v="${1#??}"
+                x="${1%"$v"}"
+                handle_option "${x#-}" "$v"
+            fi
+            shift;;
+        *)
+            break;;
+    esac
+done
+
+if [ $# = 0 ]; then
+    fatal 64 'missing command'
+fi
+if ! which -- "$1" >/dev/null; then
+    fatal 127 "command not found: $1"
+fi
+
+args=
+for arg; do
+    args="$args '$(printf %s "$arg" | sed "s/'/'\\\\''/g; s/\"/\\\\\"/g")'"
+done
+
+# first exec: this script
+# second exec: i3 command
+# third exec: i3 exec uses sh -c, so in that sh
+exec i3-msg -q "exec \"exec$args\""
