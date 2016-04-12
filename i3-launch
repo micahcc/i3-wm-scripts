@@ -1,6 +1,6 @@
 #!/bin/sh -ue
 args=
 for arg; do
-    args="$args '$(printf %s "$arg" | sed "s/'/'\\\\''/g")'"
+    args="$args '$(printf %s "$arg" | sed "s/'/'\\\\''/g; s/\"/\\\\\"/g")'"
 done
-exec i3-msg -q exec "\"exec $(printf %s "$args" | sed -r 's/"/\\"/g')\""
+exec i3-msg -q exec "\"exec$args\""
