@@ -1,0 +1,4 @@
+#!/bin/sh -ue
+if [ -z "$(xsel | head -n2 | tail -n+2 | head -n1)" ]; then
+    xsel | xvkbd -xsendevent -file - 2>/dev/null
+fi

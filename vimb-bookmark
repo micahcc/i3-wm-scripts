@@ -1,0 +1,3 @@
+#!/bin/sh -ue
+selected="$(sed -r 's/\t([^\t]*)\t?/    \1    /' <~/.config/vimb/bookmark | dmenu "$@")"
+exec vimb "${selected%% *}"
