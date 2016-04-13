@@ -44,12 +44,16 @@ if ! which -- "$1" >/dev/null; then
     fatal 127 "command not found: $1"
 fi
 
+i3_exec_quote() {
+    # for sh, wrap in single quotes with escaped existing single quote
+    # then strip leading/trailing empty single quotes to make inspection easier
+    # for i3, escape double quotes
+    printf %s "$1" | sed "s/'/'\\\\''/g; s/^\\|\$/'/g; s/^''\\|''\$//g;"' s/"/\\"/g'
+}
+
 args=
 for arg; do
-    args="$args '$(printf %s "$arg" | sed "s/'/'\\\\''/g; s/\"/\\\\\"/g")'"
+    args="$args $(i3_exec_quote "$arg")"
 done
 
-# first exec: this script
-# second exec: i3 command
-# third exec: i3 exec uses sh -c, so in that sh
-exec i3-msg -q "exec \"exec$args\""
+exec i3-msg -q "exec \"cd $(i3_exec_quote "$PWD") && exec$args\""
