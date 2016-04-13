@@ -55,9 +55,8 @@ fi
 
 i3_exec_quote() {
     # for sh, wrap in single quotes with escaped existing single quote
-    # then strip leading/trailing empty single quotes to make inspection easier
     # for i3, escape double quotes
-    printf %s "$1" | sed "s/'/'\\\\''/g; s/^\\|\$/'/g; s/^''\\|''\$//g;"' s/"/\\"/g'
+    printf %s "$1"x | sed "s/'/'\\\\''/g; 1s/^/'/; \$s/x\$/'/; s/\"/\\\\\"/g"
 }
 
 cmd=exec
