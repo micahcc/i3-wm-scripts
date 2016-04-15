@@ -1,4 +1,4 @@
-#!env python
+#!/usr/bin/env python
 """
 Tool for jumping to a window by looking through the window names.
 
