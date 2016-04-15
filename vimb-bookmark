@@ -10,17 +10,14 @@ import re
 import subprocess
 import sys
 
-def main(args):
-    if not args:
-        args = ["dmenu"]
-    filename = (os.environ.get("XDG_CONFIG_HOME") or os.environ["HOME"] + "/.config") + "/vimb/bookmark"
-    with open(filename) as f, popen(args) as dmenu:
+def get_bookmark_lines(filename):
+    with open(filename) as f:
         for line in f:
             line = line.rstrip()
             if line.startswith("#"):
                 continue
             if not line:
-                dmenu.stdin.write("\n")
+                yield ""
                 continue
             line = re.sub(" {2,}", " ", line)
 
@@ -36,14 +33,21 @@ def main(args):
                 out = ""
             if tags:
                 out += " [" + " ".join("#" + x for x in tags) + "]"
-            dmenu.stdin.write("{}  ({})\n".format(out, url))
+            yield "{}  ({})".format(out, url)
+
+def main(args):
+    if not args:
+        args = ["dmenu"]
+    filename = (os.environ.get("XDG_CONFIG_HOME") or os.environ["HOME"] + "/.config") + "/vimb/bookmark"
+    with popen(args) as dmenu:
+        for line in get_bookmark_lines(filename):
+            dmenu.stdin.write(line + "\n")
         dmenu.stdin.close()
         seen = {""}
-        for x in iter(dmenu.stdout.readline, ""):
+        for line in iter(dmenu.stdout.readline, ""):
+            url = line.rstrip()
             if "  (" in url:
-                url = x.rstrip().partition("  (")[2][:-1]
-            elif url.partition("://")[0] not in ("http", "https", "file", "ftp"):
-                url = "http://" + url
+                url = url.partition("  (")[2][:-1]
             if url not in seen:
                 seen.add(url)
                 os.spawnvp(os.P_NOWAIT, "vimb", ["vimb", url])
