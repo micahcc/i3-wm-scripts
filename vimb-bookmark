@@ -28,12 +28,12 @@ def get_bookmark_lines(filename):
             tags = tags.strip().split(" ")
 
             if title:
-                out = title
+                out = title + "        "
             else:
                 out = ""
             if tags:
-                out += " [" + " ".join("#" + x for x in tags) + "]"
-            yield "{}  ({})".format(out, url)
+                out += " ".join("#" + x for x in tags)
+            yield "{}        ({})".format(out, url)
 
 def main(args):
     if not args:
