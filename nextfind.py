@@ -1,4 +1,18 @@
 #!env python
+"""
+Tool for jumping to a window by looking through the window names.
+
+Usage:
+
+    nextfind.py [dmenu options]
+
+
+Too pull up a list of windows in dmenu:
+
+    nextfind.py -sb green -nb red
+
+"""
+
 
 from sys import exit, argv
 from subprocess import *
@@ -118,3 +132,4 @@ if __name__ == '__main__':
 
     next_selected = cycle_selected(current, selected)
     focus_window(next_selected)
+

@@ -1,4 +1,14 @@
 #!/bin/bash
+# Tool for listing all the i3 windows in dmenu
+#
+# Usage:
+#
+#   goto [dmenu args]
+#
+# Example
+#
+#   goto -l 10 -b
+#
 
 name=`i3-msg -t get_marks | tr -d '[],' | sed -e 's/""/\n/g' | tr -d '"' | dmenu -p 'jump' "$@"`;
 /usr/bin/i3-msg "[con_mark=$name]" focus
