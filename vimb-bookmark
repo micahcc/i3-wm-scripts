@@ -40,7 +40,10 @@ def main(args):
         dmenu.stdin.close()
         seen = {""}
         for x in iter(dmenu.stdout.readline, ""):
-            url = x.rstrip().partition("  (")[2][:-1]
+            if "  (" in url:
+                url = x.rstrip().partition("  (")[2][:-1]
+            elif url.partition("://")[0] not in ("http", "https", "file", "ftp"):
+                url = "http://" + url
             if url not in seen:
                 seen.add(url)
                 os.spawnvp(os.P_NOWAIT, "vimb", ["vimb", url])
