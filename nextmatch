@@ -1,5 +1,4 @@
-#!/usr/bin/env python3.4
-
+#!/usr/bin/env python3
 import re
 import string
 import sys
@@ -15,7 +14,8 @@ def search_window(windows, expr):
     regex = re.compile(expr, re.I)
     matches = []
     for (wm_class, name), L in windows.items():
-        if regex.match("class:" + wm_class) or regex.match(name):
+        print(wm_class)
+        if regex.match(wm_class) or regex.match(name):
             matches.extend(L)
     return matches
 
@@ -24,6 +24,7 @@ def main(args):
         return "usage: nextmatch [TEXT]"
     current, windows = common.get_named_windows()
     matches = search_window(windows, args[0])
+    print(matches)
     if matches:
         common.focus_window(common.cycle_selected(current, matches))
 

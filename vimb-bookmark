@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 # vimb-bookmark [dmenu-command]
 #
 # Open dmenu-selected URLs from vimb bookmarks.
