@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+import re
+import string
+import sys
+
+import common
+
+def search_window(windows, expr):
+    flags = re.I
+    for x in expr:
+        if x in string.ascii_uppercase:
+            flags = 0
+            break
+    regex = re.compile(expr, re.I)
+    matches = []
+    for (wm_class, name), L in windows.items():
+        print(wm_class)
+        if regex.match(wm_class) or regex.match(name):
+            matches.extend(L)
+    return matches
+
+def main(args):
+    if len(args) != 1:
+        return "usage: nextmatch [TEXT]"
+    current, windows = common.get_named_windows()
+    matches = search_window(windows, args[0])
+    print(matches)
+    if matches:
+        common.focus_window(common.cycle_selected(current, matches))
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

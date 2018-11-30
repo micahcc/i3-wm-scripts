@@ -1,0 +1,67 @@
+#!/bin/sh -ue
+# i3-exec COMMAND [ARG]..
+#
+# Tell i3 to start a command.  The environment and other process state is inherited from i3, not i3-exec.
+#
+# The command is *not* a shell command, and thus redirections, globs, or other shell features will not work.  If you want that, run "i3-msg exec".  If you want your head to explode instead, run "i3-exec sh -c 'command'".
+#
+# Options:
+#     --startup-id                command uses $DESKTOP_STARTUP_ID
+
+fatal() {
+    printf %s\\n "$(basename "$0"): $2" >&2
+    exit $1
+}
+
+startup_id=--no-startup-id
+handle_option() {
+    case "$1" in
+        startup-id) [ $# = 1 ] || fatal 64 "unexpected --$1 value"
+            startup_id= ;;
+        no-startup-id) [ $# = 1 ] || fatal 64 "unexpected --$1 value"
+            startup_id=--no-startup-id ;;
+        *) fatal 64 "unknown option: $1" ;;
+    esac
+}
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --)
+            shift
+            break;;
+        --*=*)
+            x="${1#--}"
+            handle_option "${x%%=*}" "${x#*=}"
+            shift;;
+        --*)
+            handle_option "${1#--}"
+            shift;;
+        -?*)
+            if [ ${#1} = 2 ]; then
+                handle_option "${1#-}"
+            else
+                v="${1#??}"
+                x="${1%"$v"}"
+                handle_option "${x#-}" "$v"
+            fi
+            shift;;
+        *)
+            break;;
+    esac
+done
+
+if [ $# = 0 ]; then
+    fatal 64 'missing command'
+fi
+
+i3_exec_quote() {
+    # for sh, wrap in single quotes with escaped existing single quote
+    # for i3, escape double quotes
+    printf %s "$1"x | sed "s/'/'\\\\''/g; 1s/^/'/; \$s/x\$/'/; s/\"/\\\\\"/g"
+}
+
+cmd=exec
+for arg; do
+    cmd="$cmd $(i3_exec_quote "$arg")"
+done
+
+exec i3-msg -q "exec $startup_id \"cd $(i3_exec_quote "$PWD") && $cmd\""

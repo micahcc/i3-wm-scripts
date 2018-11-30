@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+import os
+import re
+import subprocess
+import sys
+
+import common
+
+def iter_plus(it, extra):
+    yield from it
+    yield extra
+def joinlines(L):
+    return "\n".join(iter_plus(L, ""))
+
+def select_window(windows, dmenu_args):
+    """return (dmenu-output, list of IDs) for the selected option"""
+    windows = sorted(windows.items(), key=lambda x: tuple(map(str.lower, x[0])))
+    options = []
+    for (wm_class, title), L in windows:
+        mult = ""
+        if len(L) > 1:
+            mult = " x{}".format(len(L))
+        display = "({}{}) {}".format(wm_class, mult, title)
+        options.append((display, L))
+    try:
+        ret = subprocess.check_output(["dmenu"] + dmenu_args, input=joinlines(x for x, _ in options).encode("UTF-8"))
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
+    ret = ret.decode("UTF-8").strip()
+    selected = next(v for k, v in options if k == ret)
+    return ret, selected
+
+def main(args):
+    current, windows = common.get_named_windows()
+    if not windows:
+        return
+    query, selected = select_window(windows, args)
+    common.focus_window(common.cycle_selected(current, selected))
+    with open(os.path.dirname(__file__) + "/.query.tmp", "w") as f:
+        f.write("^" + re.escape(query.partition(") ")[2]) + "$")
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

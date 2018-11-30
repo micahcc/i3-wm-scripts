@@ -1,6 +1,6 @@
-#!/bin/bash
-
-name=`i3-msg -t get_marks | tr -d '[],' | sed -e 's/""/\n/g' | tr -d '"' | dmenu -p 'unmark'`;
-if [[ -n $name ]]; then
-    /usr/bin/i3-msg unmark $name
+#!/bin/sh -ue
+name="$(i3-msg -t get_marks | tr -d '[],' | sed -e 's/""/\n/g' | tr -d '"' | dmenu -p unmark)"
+if [ -z "$name" ]; then
+    exit 1
 fi
+exec i3-msg unmark "$name"

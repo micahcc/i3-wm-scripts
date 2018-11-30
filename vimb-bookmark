@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# vimb-bookmark [dmenu-command]
+#
+# Open dmenu-selected URLs from vimb bookmarks.
+#
+# Note: dmenu must be line-buffered (eg. "stdbuf --output=L dmenu ..." on Linux) if you want multiple selections (ctrl+return) to start immediately.
+
+import os
+import re
+import subprocess
+import sys
+
+def get_bookmark_lines(filename):
+    with open(filename) as f:
+        for line in f:
+            line = line.rstrip()
+            if line.startswith("#"):
+                continue
+            if not line:
+                yield ""
+                continue
+            line = re.sub(" {2,}", " ", line)
+
+            url, _, rest = line.partition("\t")
+            url = url.strip()
+            title, _, tags = rest.partition("\t")
+            title = title.strip()
+            tags = tags.strip().split(" ")
+
+            if title:
+                out = title + "        "
+            else:
+                out = ""
+            if tags:
+                out += " ".join("#" + x for x in tags)
+            yield "{}        ({})".format(out, url)
+
+def main(args):
+    if not args:
+        args = ["dmenu"]
+    filename = (os.environ.get("XDG_CONFIG_HOME") or os.environ["HOME"] + "/.config") + "/vimb/bookmark"
+    with popen(args) as dmenu:
+        for line in get_bookmark_lines(filename):
+            dmenu.stdin.write(line + "\n")
+        dmenu.stdin.close()
+        seen = {""}
+        for line in iter(dmenu.stdout.readline, ""):
+            url = line.rstrip()
+            if "  (" in url:
+                url = url.partition("  (")[2][:-1]
+            if url not in seen:
+                seen.add(url)
+                os.spawnvp(os.P_NOWAIT, "vimb", ["vimb", url])
+
+def popen(*args, **kwds):
+    assert "stderr" not in kwds
+    return subprocess.Popen(*args, bufsize=1, universal_newlines="\n", stdin=subprocess.PIPE, stdout=subprocess.PIPE, **kwds)
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
