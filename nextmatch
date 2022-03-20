@@ -15,7 +15,7 @@ def search_window(windows, expr):
     matches = []
     for (wm_class, name), L in windows.items():
         print(wm_class)
-        if regex.match(wm_class) or regex.match(name):
+        if regex.match(wm_class) or regex.search(name):
             matches.extend(L)
     return matches
 
